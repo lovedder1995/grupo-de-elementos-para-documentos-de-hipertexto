@@ -1,15 +1,16 @@
 {
-  "name": "grupo-de-elementos-para-documentos-de-hipertexto",
-  "version": "2026.02.05.1",
-  "type": "module",
-  "main": "fuente/grupo_de_elementos_para_documentos_de_hipertexto.js",
-  "scripts": {
-    "formatear": "eslint-autocontenido --fix ."
-  },
-  "devDependencies": {
-    "eslint-autocontenido": "github:lovedder1995/eslint-autocontenido#2026.02.03.5",
-    "eslint-js-autocontenido": "github:lovedder1995/eslint-js-autocontenido#2026.02.03.2",
-    "globals": "^17.3.0",
-    "stylistic-eslint-plugin-autocontenido": "github:lovedder1995/stylistic-eslint-plugin-autocontenido#2026.02.04.2"
-  }
+    "name": "grupo-de-elementos-para-documentos-de-hipertexto",
+    "version": "2026.02.05.2",
+    "type": "module",
+    "main": "fuente/grupo_de_elementos_para_documentos_de_hipertexto.js",
+    "scripts": {
+        "formatear": "eslint-autocontenido --fix .",
+        "git:consolidar": "bun -e \"const fs=require('node:fs');const cp=require('node:child_process');const file='package.json';const original=fs.readFileSync(file,'utf8');let pkg;try{pkg=JSON.parse(original);}catch(e){process.stderr.write('No se pudo parsear package.json\\n');process.exit(2);}const oldVersion=String(pkg&&pkg.version||'');const now=new Date();const y=now.getFullYear();const m=String(now.getMonth()+1).padStart(2,'0');const d=String(now.getDate()).padStart(2,'0');const todayPrefix=String(y)+'.'+m+'.'+d;function bumpWithDate(v){const match=/^(\\\\d{4})\\\\.(\\\\d{2})\\\\.(\\\\d{2})(?:\\\\.(\\\\d+))?$/.exec(String(v).trim());if(match&&String(match[1])+'.'+match[2]+'.'+match[3]===todayPrefix){const n=match[4]?Number(match[4]):0;if(!Number.isFinite(n)||n<0){throw new Error('La versión actual tiene un sufijo inválido');}return todayPrefix+'.'+String(n+1);}return todayPrefix+'.1';}let nextVersion;try{nextVersion=bumpWithDate(oldVersion);}catch(e){process.stderr.write(String(e&&e.message||e)+'\\n');process.exit(2);}pkg.version=nextVersion;const updated=JSON.stringify(pkg,null,4)+'\\n';try{fs.writeFileSync(file,updated,'utf8');cp.execFileSync('git',['add',file],{stdio:'inherit'});cp.execFileSync('git',['commit','-m',nextVersion],{stdio:'inherit'});}catch(e){try{fs.writeFileSync(file,original,'utf8');}catch{}try{cp.execFileSync('git',['reset','--',file],{stdio:'inherit'});}catch{}process.stderr.write(String(e&&e.message||e)+'\\n');process.exit(1);}\""
+    },
+    "devDependencies": {
+        "eslint-autocontenido": "github:lovedder1995/eslint-autocontenido#2026.02.03.5",
+        "eslint-js-autocontenido": "github:lovedder1995/eslint-js-autocontenido#2026.02.03.2",
+        "globals": "^17.3.0",
+        "stylistic-eslint-plugin-autocontenido": "github:lovedder1995/stylistic-eslint-plugin-autocontenido#2026.02.04.2"
+    }
 }

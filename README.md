@@ -31,7 +31,7 @@ El problema clásico del desarrollo web es el **alcance global del CSS**. Tradic
 ## Instalación
 
 ```bash
-bun add github:lovedder1995/grupo-de-elementos-para-documentos-de-hipertexto#{última.fecha.de.publicación}
+npm install github:lovedder1995/grupo-de-elementos-para-documentos-de-hipertexto#{última.fecha.de.publicación}
 ```
 
 ## Uso Básico
