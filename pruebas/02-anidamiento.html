@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Prueba 02: Anidamiento y Pseudo-clases</title>
+</head>
+<body>
+    <a href="../index.html" style="display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333;">← Volver al Índice</a>
+    <h1>Prueba 02: Anidamiento (Nesting)</h1>
+    <p>Objetivo: Verificar selectores anidados, pseudo-clases y uso de "&".</p>
+    
+    <div id="contenedor"></div>
+
+    <script type="module">
+        import crear_grupo from "../fuente/grupo_de_elementos_para_documentos_de_hipertexto.js"
+
+        const grupo = crear_grupo()
+        const boton = grupo.elemento({
+            tagName: "button",
+            classList: "boton",
+            innerHTML: "Pásame el cursor por encima <br><small>(Debe oscurecerse y mostrar una flecha →)</small>"
+        })
+        
+        grupo.estilos({
+            reglas: {
+                ".boton": {
+                    backgroundColor: "#ddd",
+                    padding: "10px 20px",
+                    border: "none",
+                    cursor: "pointer",
+                    fontSize: "16px",
+                    transition: "all 0.3s",
+                    
+                    /* Anidamiento con pseudo-clase */
+                    "&:hover": {
+                        backgroundColor: "#aaa",
+                        color: "white"
+                    },
+
+                    /* Anidamiento profundo */
+                    "& span": {
+                        fontWeight: "bold"
+                    },
+
+                    /* Pseudo-elemento */
+                    "&::after": {
+                        content: "' →'",
+                        opacity: 0,
+                        transition: "opacity 0.3s"
+                    },
+
+                    /* Estado compuesto */
+                    "&:hover::after": {
+                        opacity: 1
+                    }
+                }
+            }
+        })
+        document.getElementById("contenedor").appendChild(boton)
+    </script>
+</body>
+</html>

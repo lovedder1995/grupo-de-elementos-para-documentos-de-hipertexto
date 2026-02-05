@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Prueba 03: Animaciones Aisladas</title>
+</head>
+<body>
+    <a href="../index.html" style="display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333;">← Volver al Índice</a>
+    <h1>Prueba 03: Keyframes Aislados</h1>
+    <p>Objetivo: Verificar que dos animaciones con el mismo nombre ("girar") no colisionen.</p>
+    
+    <div style="display: flex; gap: 50px;">
+        <div id="contenedor-1">
+            <h3>Grupo 1: Gira horario</h3>
+        </div>
+        <div id="contenedor-2">
+            <h3>Grupo 2: Gira anti-horario</h3>
+        </div>
+    </div>
+
+    <script type="module">
+        import crear_grupo from "../fuente/grupo_de_elementos_para_documentos_de_hipertexto.js"
+
+        // GRUPO 1
+        const grupo1 = crear_grupo()
+        const cuadro1 = grupo1.elemento({
+            tagName: "div",
+            classList: "cuadro",
+            childNodes: "1"
+        })
+        grupo1.estilos({
+            reglas: {
+                ".cuadro": {
+                    width: "100px",
+                    height: "100px",
+                    backgroundColor: "tomato",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    fontSize: "2rem",
+                    animation: "girar 2s infinite linear"
+                },
+                "@keyframes girar": {
+                    from: { transform: "rotate(0deg)" },
+                    to: { transform: "rotate(360deg)" }
+                }
+            }
+        })
+        document.getElementById("contenedor-1").appendChild(cuadro1)
+
+
+        // GRUPO 2 (Mismo nombre de animación, diferente comportamiento)
+        const grupo2 = crear_grupo()
+        const cuadro2 = grupo2.elemento({
+            tagName: "div",
+            classList: "cuadro",
+            childNodes: "2"
+        })
+        grupo2.estilos({
+            reglas: {
+                ".cuadro": {
+                    width: "100px",
+                    height: "100px",
+                    backgroundColor: "skyblue",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    fontSize: "2rem",
+                    animation: "girar 2s infinite linear"
+                },
+                "@keyframes girar": {
+                    from: { transform: "rotate(0deg)" },
+                    to: { transform: "rotate(-360deg)" } // Gira al revés
+                }
+            }
+        })
+        document.getElementById("contenedor-2").appendChild(cuadro2)
+    </script>
+</body>
+</html>

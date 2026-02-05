@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Prueba 04: Responsive</title>
+</head>
+<body>
+    <a href="../index.html" style="display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333;">← Volver al Índice</a>
+    <h1>Prueba 04: Media Queries</h1>
+    <p>Objetivo: Reducir el ancho de la ventana. El cuadro debe cambiar de color.</p>
+    
+    <div id="contenedor"></div>
+
+    <script type="module">
+        import crear_grupo from "../fuente/grupo_de_elementos_para_documentos_de_hipertexto.js"
+
+        const grupo = crear_grupo()
+        const caja = grupo.elemento({
+            tagName: "div",
+            classList: "caja-responsive",
+            childNodes: "Soy verde (>600px) o rosa (<=600px)"
+        })
+        
+        grupo.estilos({
+            reglas: {
+                ".caja-responsive": {
+                    width: "100%",
+                    padding: "20px",
+                    backgroundColor: "lightgreen",
+                    textAlign: "center",
+                    transition: "background-color 0.5s",
+
+                    "@media (max-width: 600px)": {
+                        backgroundColor: "lightpink",
+                        fontWeight: "bold"
+                    }
+                }
+            }
+        })
+        document.getElementById("contenedor").appendChild(caja)
+    </script>
+</body>
+</html>

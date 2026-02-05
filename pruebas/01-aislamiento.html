@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Prueba 01: Aislamiento Básico</title>
+</head>
+<body>
+    <a href="../index.html" style="display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333;">← Volver al Índice</a>
+    <h1>Prueba 01: Aislamiento de Estilos</h1>
+    <p>Objetivo: Verificar que los estilos de un grupo NO afecten a otro grupo idéntico.</p>
+    
+    <div id="contenedor-1"></div>
+    <div id="contenedor-2"></div>
+    <div id="contenedor-externo">
+        <h2 class="titulo">Soy un título externo (debería ser negro por defecto)</h2>
+    </div>
+
+    <script type="module">
+        import crear_grupo from "../fuente/grupo_de_elementos_para_documentos_de_hipertexto.js"
+
+        // GRUPO 1: Títulos ROJOS
+        const grupo1 = crear_grupo()
+        const div1 = grupo1.elemento({
+            tagName: "div",
+            innerHTML: `
+                <h2 class="titulo">Soy del Grupo 1 (Debería ser ROJO)</h2>
+            `
+        })
+        grupo1.estilos({
+            reglas: {
+                ".titulo": {
+                    color: "red",
+                    fontSize: "20px"
+                }
+            }
+        })
+        document.getElementById("contenedor-1").appendChild(div1)
+
+
+        // GRUPO 2: Títulos AZULES
+        const grupo2 = crear_grupo()
+        const div2 = grupo2.elemento({
+            tagName: "div",
+            innerHTML: `
+                <h2 class="titulo">Soy del Grupo 2 (Debería ser AZUL)</h2>
+            `
+        })
+        grupo2.estilos({
+            reglas: {
+                ".titulo": {
+                    color: "blue",
+                    fontSize: "20px"
+                }
+            }
+        })
+        document.getElementById("contenedor-2").appendChild(div2)
+    </script>
+</body>
+</html>

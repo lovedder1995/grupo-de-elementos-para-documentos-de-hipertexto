@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Prueba 08: Recolección de Basura</title>
+</head>
+<body>
+    <a href="../index.html" style="display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333;">← Volver al Índice</a>
+    <h1>Prueba 08: Recolección de Basura (Garbage Collection)</h1>
+    <p>Objetivo: Verificar que los estilos se eliminen automáticamente cuando ya no se usan en el DOM.</p>
+    
+    <div style="background: #e3f2fd; padding: 15px; border-left: 5px solid #2196f3; margin-bottom: 20px;">
+        <strong>Limpieza explícita</strong>
+        <p style="margin: 5px 0;">
+            Nuestro sistema de estilos no monitoriza el DOM constantemente para recolectar los estilos basura. 
+        </p>
+        <p style="margin: 5px 0;">
+            A veces, cuando, por ejemplo, usamos estilos globales, necesitamos eliminar los estilos inmediatamente después de eliminar el elemento. Para estos casos, disponemos de la función <code>recolectar_estilos_basura({ de_inmediato: true })</code>.
+        </p>
+    </div>
+
+    <div id="panel-control" style="border: 1px solid #ccc; padding: 20px; margin-bottom: 20px;">
+        <button id="btn-crear">1. Crear elemento y estilos</button>
+        <button id="btn-eliminar" disabled>2. Eliminar elemento y solicitar la recolección de basura</button>
+        <div id="contenedor-prueba" style="margin-top: 20px;"></div>
+    </div>
+
+    <div id="estado-estilos" style="font-family: monospace; background: #eee; padding: 10px;">
+        Esperando acción...
+    </div>
+
+    <script type="module">
+        import crear_grupo from "../fuente/grupo_de_elementos_para_documentos_de_hipertexto.js"
+
+        const btnCrear = document.getElementById("btn-crear")
+        const btnEliminar = document.getElementById("btn-eliminar")
+        const contenedor = document.getElementById("contenedor-prueba")
+        const estadoDiv = document.getElementById("estado-estilos")
+        
+        let grupo_actual = null
+        let intervalo_check = null
+
+        // Función para contar etiquetas style de nuestra librería
+        const contarEstilosActivos = () => {
+            const estilos = document.querySelectorAll('style[id^="estilos-"]')
+            
+            // Si el contenido no ha cambiado, no actualizamos el DOM para evitar parpadeos
+            const nuevoHtml = `<strong>Etiquetas &lt;style&gt; activas: ${estilos.length}</strong><br>` + 
+                Array.from(estilos).map(s => `- ID: ${s.id} (Grupo: ${s.id.replace("estilos-", "").substring(0,8)}...)`).join("<br>")
+            
+            if (estadoDiv.innerHTML !== nuevoHtml) {
+                estadoDiv.innerHTML = nuevoHtml
+            }
+        }
+
+        // Monitorizar cambios cada 500ms
+        // setInterval(contarEstilosActivos, 500)
+        // Ya no usamos setInterval, actualizamos solo cuando es necesario.
+        contarEstilosActivos() // Estado inicial
+
+        btnCrear.addEventListener("click", () => {
+            contenedor.innerHTML = "" // Limpiamos mensajes anteriores
+            grupo_actual = crear_grupo()
+            
+            const caja = grupo_actual.elemento({
+                tagName: "div",
+                childNodes: [
+                    grupo_actual.elemento({ tagName: "h3", innerHTML: "Soy un elemento temporal" }),
+                    grupo_actual.elemento({ tagName: "p", innerHTML: "Mis estilos existen mientras yo exista." }),
+                    grupo_actual.elemento({ tagName: "small", innerHTML: "(Cuando me elimines, mis estilos se borrarán en el próximo ciclo de limpieza)" })
+                ]
+            })
+            
+            grupo_actual.estilos({
+                reglas: {
+                    "div": {
+                        backgroundColor: "salmon",
+                        padding: "20px",
+                        color: "white",
+                        fontWeight: "bold"
+                    },
+                    ":global(body)": {
+                        backgroundColor: "#ffe0b2", // Un naranja muy clarito que combina con el salmón
+                        transition: "background-color 0.5s"
+                    }
+                }
+            })
+            
+            contenedor.appendChild(caja)
+            
+            btnCrear.disabled = true
+            btnEliminar.disabled = false
+            
+            // Actualizamos estado inmediatamente
+            contarEstilosActivos()
+        })
+
+        btnEliminar.addEventListener("click", () => {
+            contenedor.innerHTML = "" // Eliminamos el elemento del DOM
+            
+            // Pasamos 'de_inmediato: true' para forzar la limpieza inmediata y evitar retrasos visuales al eliminar el fondo del documento
+            grupo_actual.recolectar_estilos_basura({ de_inmediato: true })
+            
+            grupo_actual = null
+            
+            btnEliminar.disabled = true
+            
+            const mensaje = document.createElement("p")
+            mensaje.textContent = "Elemento eliminado. Esperando al Recolector de Basura (aprox 1-2 seg)..."
+            contenedor.appendChild(mensaje)
+            btnCrear.disabled = false
+            mensaje.textContent = " ¡Listo! Puedes crear otro."
+                
+            // Verificamos estado final
+            contarEstilosActivos()
+        })
+
+    </script>
+</body>
+</html>

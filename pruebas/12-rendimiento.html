@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Prueba 12: Rendimiento</title>
+</head>
+<body>
+    <a href="../index.html" style="display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333;">← Volver al Índice</a>
+    <h1>Prueba 12: Test de Rendimiento</h1>
+    <p>Objetivo: Medir el tiempo de generación y renderizado de múltiples componentes aislados, así como la eficiencia del recolector de basura.</p>
+
+    <div id="controles" style="margin-bottom: 20px; padding: 15px; background: #eee; border-radius: 8px;">
+        <label>
+            Cantidad de componentes: 
+            <input type="number" id="cantidad" value="500" min="10" max="5000" style="width: 80px;">
+        </label>
+        <button id="btn-iniciar">Iniciar Benchmark</button>
+        <button id="btn-limpiar" disabled>Limpiar y Recolectar Basura</button>
+    </div>
+
+    <div id="resultados" style="margin-bottom: 20px; font-family: monospace; white-space: pre-wrap; background: #f9f9f9; padding: 10px; border: 1px solid #ddd; max-height: 200px; overflow-y: auto;">Esperando inicio...</div>
+
+    <div id="contenedor-prueba" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)); gap: 5px;"></div>
+
+    <script type="module">
+        import crear_grupo from "../fuente/grupo_de_elementos_para_documentos_de_hipertexto.js"
+
+        const btnIniciar = document.getElementById("btn-iniciar")
+        const btnLimpiar = document.getElementById("btn-limpiar")
+        const inputCantidad = document.getElementById("cantidad")
+        const contenedor = document.getElementById("contenedor-prueba")
+        const resultados = document.getElementById("resultados")
+
+        let grupos = []
+
+        const log = (msg) => {
+            if (resultados.textContent === "Esperando inicio...") resultados.textContent = ""
+            resultados.textContent += msg + "\n"
+            resultados.scrollTop = resultados.scrollHeight
+            console.log(msg)
+        }
+
+        btnIniciar.addEventListener("click", async () => {
+            const cantidad = parseInt(inputCantidad.value)
+            if (!cantidad || cantidad < 1) return
+
+            btnIniciar.disabled = true
+            btnLimpiar.disabled = true
+            contenedor.innerHTML = ""
+            grupos = []
+            resultados.textContent = "Iniciando...\n"
+
+            // Damos un pequeño respiro al UI para que pinte el "Iniciando..."
+            await new Promise(r => requestAnimationFrame(r))
+            await new Promise(r => setTimeout(r, 50))
+
+            const t0 = performance.now()
+
+            const fragmento = document.createDocumentFragment()
+
+            for (let i = 0; i < cantidad; i++) {
+                const grupo = crear_grupo()
+                grupos.push(grupo)
+
+                // Estilos únicos por componente para forzar generación de reglas aisladas y nuevas etiquetas style
+                grupo.estilos({
+                    reglas: {
+                        "div": {
+                            height: "50px",
+                            backgroundColor: `hsl(${Math.random() * 360}, 70%, 60%)`,
+                            borderRadius: "4px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: "12px",
+                            color: "white",
+                            fontWeight: "bold",
+                            cursor: "pointer",
+                            transition: "transform 0.2s"
+                        },
+                        "div:hover": {
+                            transform: "scale(1.2) rotate(5deg)",
+                            zIndex: "10",
+                            boxShadow: "0 4px 10px rgba(0,0,0,0.3)"
+                        }
+                    }
+                })
+
+                const el = grupo.elemento({
+                    tagName: "div",
+                    innerHTML: `${i + 1}`
+                })
+
+                fragmento.appendChild(el)
+            }
+
+            contenedor.appendChild(fragmento)
+
+            const t1 = performance.now()
+            const tiempo = (t1 - t0).toFixed(2)
+            const promedio = (tiempo / cantidad).toFixed(3)
+
+            log(`--------------------------------`)
+            log(`Resultados para ${cantidad} componentes:`)
+            log(`Tiempo total de creación: ${tiempo} ms`)
+            log(`Promedio por componente: ${promedio} ms`)
+            log(`Etiquetas <style> en el DOM: ${document.querySelectorAll('style[id^="estilos-"]').length}`)
+            log(`--------------------------------`)
+
+            btnLimpiar.disabled = false
+        })
+
+        btnLimpiar.addEventListener("click", async () => {
+            btnLimpiar.disabled = true
+            log(`Iniciando limpieza...`)
+            
+            // Damos respiro para UI
+            await new Promise(r => requestAnimationFrame(r))
+            await new Promise(r => setTimeout(r, 50))
+
+            const t0 = performance.now()
+            
+            // 1. Eliminamos elementos del DOM
+            contenedor.innerHTML = ""
+            
+            // 2. Invocamos GC explícito inmediato
+            if (grupos.length > 0) {
+                // Usamos la instancia del último grupo para llamar a la utilidad compartida
+                grupos[0].recolectar_estilos_basura({ de_inmediato: true })
+            }
+            
+            grupos = []
+
+            const t1 = performance.now()
+            log(`Limpieza completada en ${(t1 - t0).toFixed(2)} ms`)
+            log(`Etiquetas <style> restantes: ${document.querySelectorAll('style[id^="estilos-"]').length}`)
+            log(`--------------------------------`)
+            
+            btnIniciar.disabled = false
+        })
+    </script>
+</body>
+</html>

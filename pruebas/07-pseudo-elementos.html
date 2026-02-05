@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Prueba 07: Pseudo-elementos y Reglas-At</title>
+</head>
+<body>
+    <a href="../index.html" style="display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333;">← Volver al Índice</a>
+    <h1>Prueba 07: Pseudo-elementos y Reglas-At</h1>
+    <p>Objetivo: Verificar que los pseudo-elementos (::before, ::after) y reglas como @font-face funcionen correctamente con el aislamiento.</p>
+
+    <div id="contenedor-prueba"></div>
+
+    <script type="module">
+        import crear_grupo from "../fuente/grupo_de_elementos_para_documentos_de_hipertexto.js"
+
+        const grupo = crear_grupo()
+        const contenedor = document.getElementById("contenedor-prueba")
+
+        // 1. Elemento con pseudo-elemento ::before
+        const boton = grupo.elemento({
+            tagName: "button",
+            innerHTML: "Botón (Debe tener ★ dorada antes y ◀ roja después)",
+            classList: ["btn-icon"]
+        })
+
+        // 2. Elemento que usa @font-face
+        const texto_fuente = grupo.elemento({
+            tagName: "p",
+            innerHTML: "Texto con fuente personalizada EuphoriaScript (debe verse cursiva/manuscrita)",
+            classList: ["texto-custom"]
+        })
+
+        contenedor.appendChild(boton)
+        contenedor.appendChild(texto_fuente)
+
+        grupo.estilos({
+            reglas: {
+                // Caso A: Pseudo-elemento anidado (estilo SCSS)
+                ".btn-icon": {
+                    padding: "10px 20px",
+                    cursor: "pointer",
+                    // Para que funcione, el usuario debería usar "&::before" en SCSS, 
+                    // pero probemos qué pasa si pone "::before" directo como anidado (comportamiento actual: espacio).
+                    // Y probemos el uso correcto con "&".
+                    
+                    "&::before": {
+                        content: '"★ "',
+                        color: "gold"
+                    }
+                },
+                
+                // Caso B: Pseudo-elemento en raíz
+                // Esto debería aplicar al elemento que tenga esta clase Y el data-id.
+                // Si el generador hace ".btn-icon::after[data-id]", fallará.
+                // Debería ser ".btn-icon[data-id]::after".
+                ".btn-icon::after": {
+                    content: '" ◀"',
+                    color: "red"
+                },
+
+                // Caso C: Pseudo-elemento SUELTO en raíz (¿posible?)
+                // Si quiero estilizar "cualquier cosa con data-id que tenga ::placeholder" (ej: inputs)
+                "::placeholder": {
+                    color: "blue"
+                },
+
+                // Caso D: @font-face
+                "@font-face": {
+                    fontFamily: "EuphoriaScript",
+                    src: "url('./EuphoriaScript-Regular_extended.otf') format('opentype')"
+                },
+                
+                ".texto-custom": {
+                    fontFamily: "EuphoriaScript, cursive, sans-serif",
+                    fontSize: "32px" // Un poco más grande para apreciar la cursiva
+                }
+            }
+        })
+    </script>
+</body>
+</html>

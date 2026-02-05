@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pruebas de Estilos</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 0.5rem;
+        }
+        .lista-pruebas {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            gap: 1rem;
+        }
+        .tarjeta-prueba {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #eee;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .tarjeta-prueba:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: #ddd;
+        }
+        .tarjeta-prueba h2 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.25rem;
+            color: #007bff;
+        }
+        .tarjeta-prueba p {
+            margin: 0;
+            color: #666;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Galería de Pruebas CSS-in-JS</h1>
+    <p>Selecciona una prueba para verificar visualmente las capacidades del motor de estilos.</p>
+
+    <div class="lista-pruebas">
+        <a href="pruebas/01-aislamiento.html" class="tarjeta-prueba">
+            <h2>01. Aislamiento Básico</h2>
+            <p>Verifica que los estilos no se filtren entre componentes idénticos.</p>
+        </a>
+        
+        <a href="pruebas/02-anidamiento.html" class="tarjeta-prueba">
+            <h2>02. Anidamiento (Nesting)</h2>
+            <p>Pseudo-clases (:hover), pseudo-elementos (::after) y selectores anidados.</p>
+        </a>
+
+        <a href="pruebas/03-animaciones.html" class="tarjeta-prueba">
+            <h2>03. Animaciones Aisladas</h2>
+            <p>Keyframes con el mismo nombre en diferentes componentes no colisionan.</p>
+        </a>
+
+        <a href="pruebas/04-responsive.html" class="tarjeta-prueba">
+            <h2>04. Diseño Responsivo</h2>
+            <p>Media queries anidados para adaptar el diseño según el ancho.</p>
+        </a>
+
+        <a href="pruebas/05-variables-fallbacks.html" class="tarjeta-prueba">
+            <h2>05. Variables y Fallbacks</h2>
+            <p>Variables CSS (case-sensitive) y arrays de valores de respaldo.</p>
+        </a>
+
+        <a href="pruebas/06-global-escape.html" class="tarjeta-prueba">
+            <h2>06. Escape Global</h2>
+            <p>Uso de :global() para afectar estilos fuera del componente.</p>
+        </a>
+
+        <a href="pruebas/07-pseudo-elementos.html" class="tarjeta-prueba">
+            <h2>07. Pseudo-elementos y Reglas-At</h2>
+            <p>Pruebas de pseudo-elementos y reglas como @media y @supports.</p>
+        </a>
+
+        <a href="pruebas/08-garbage-collection.html" class="tarjeta-prueba">
+            <h2>08. Recolección de Basura</h2>
+            <p>Verificación interactiva de la eliminación automática de estilos no usados.</p>
+        </a>
+
+        <a href="pruebas/09-modo-global.html" class="tarjeta-prueba">
+            <h2>09. Modo Global Explícito</h2>
+            <p>Uso de <code>global: true</code> para definir estilos universales sin aislamiento.</p>
+        </a>
+
+        <a href="pruebas/10-combinadores.html" class="tarjeta-prueba">
+            <h2>10. Combinadores y Reglas Complejas</h2>
+            <p>Selectores avanzados (>, +, ~), atributos y reglas @supports.</p>
+        </a>
+
+        <a href="pruebas/11-selectores-complejos.html" class="tarjeta-prueba">
+            <h2>11. Selectores Complejos</h2>
+            <p>Manejo correcto de comas dentro de atributos y funciones como :is().</p>
+        </a>
+
+        <a href="pruebas/11-moderno.html" class="tarjeta-prueba">
+            <h2>11. CSS Moderno</h2>
+            <p>Pruebas de características modernas como @layer, @container y :has().</p>
+        </a>
+
+        <a href="pruebas/12-rendimiento.html" class="tarjeta-prueba">
+            <h2>12. Rendimiento</h2>
+            <p>Benchmark de creación masiva y recolección de basura.</p>
+        </a>
+    </div>
+</body>
+</html>

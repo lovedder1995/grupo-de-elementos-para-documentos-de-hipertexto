@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Prueba 05: Variables y Fallbacks</title>
+</head>
+<body>
+    <a href="../index.html" style="display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333;">← Volver al Índice</a>
+    <h1>Prueba 05: Variables y Fallbacks</h1>
+    <p>Objetivo: Verificar Variables CSS (case-sensitive) y Fallbacks de propiedades.</p>
+    
+    <div id="contenedor"></div>
+
+    <script type="module">
+        import crear_grupo from "../fuente/grupo_de_elementos_para_documentos_de_hipertexto.js"
+
+        const grupo = crear_grupo()
+        const tarjeta = grupo.elemento({
+            tagName: "div",
+            classList: "tarjeta",
+            innerHTML: `
+                <div class="contenido">Soy una tarjeta flexible</div>
+            `
+        })
+        
+        grupo.estilos({
+            reglas: {
+                ".tarjeta": {
+                    /* Variable CSS: Debe mantenerse como --miColorPrincipal (no --mi-color-principal) */
+                    "--miColorPrincipal": "rebeccapurple",
+                    
+                    border: "2px solid var(--miColorPrincipal)",
+                    padding: "20px",
+                    color: "white",
+                    
+                    /* Fallback Array: */
+                    backgroundColor: ["red", "var(--miColorPrincipal)"], // Si soporta vars, usa purple. Si no, red.
+                    
+                    display: ["-webkit-flex", "flex"],
+                    justifyContent: "center"
+                }
+            }
+        })
+        document.getElementById("contenedor").appendChild(tarjeta)
+    </script>
+</body>
+</html>

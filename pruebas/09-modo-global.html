@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Prueba 09: Modo Global</title>
+</head>
+<body>
+    <a href="../index.html" style="display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333;">← Volver al Índice</a>
+    <h1>Prueba 09: Modo Global Explicito</h1>
+    <p>Objetivo: Verificar que <code>global: true</code> desactiva el aislamiento de estilos.</p>
+    <p>Si funciona, ambos párrafos deben ser <strong>verdes y grandes</strong>, aunque uno no pertenezca al grupo.</p>
+    
+    <div id="contenedor-grupo"></div>
+    
+    <!-- Elemento externo sin atributos de grupo -->
+    <div id="contenedor-externo">
+        <p class="texto-global">Soy un párrafo externo (HTML puro)</p>
+    </div>
+
+    <script type="module">
+        import crear_grupo from "../fuente/grupo_de_elementos_para_documentos_de_hipertexto.js"
+
+        const grupo = crear_grupo()
+        
+        // 1. Elemento del grupo
+        const parrafo = grupo.elemento({
+            tagName: "p",
+            classList: "texto-global",
+            childNodes: "Soy un párrafo del grupo (creado con JS)"
+        })
+        document.getElementById("contenedor-grupo").appendChild(parrafo)
+        
+        // 2. Estilos globales
+        // Al usar global: true, los selectores NO recibirán el atributo de datos.
+        grupo.estilos({
+            global: true,
+            reglas: {
+                ".texto-global": {
+                    color: "forestgreen",
+                    fontSize: "24px",
+                    fontWeight: "bold",
+                    border: "2px dashed forestgreen",
+                    padding: "10px",
+                    margin: "10px 0"
+                }
+            }
+        })
+    </script>
+</body>
+</html>
