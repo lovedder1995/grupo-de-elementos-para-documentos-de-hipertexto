@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Prueba 13: Rendimiento Compartido</title>
+    <style>
+        .link-volver { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333; }
+        .controles { margin-bottom: 20px; padding: 15px; background: #eee; border-radius: 8px; }
+        .input-cantidad { width: 80px; }
+        .resultados { margin-bottom: 20px; font-family: monospace; white-space: pre-wrap; background: #f9f9f9; padding: 10px; border: 1px solid #ddd; max-height: 200px; overflow-y: auto; }
+        .contenedor-prueba { display: grid; grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)); gap: 5px; }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="link-volver">← Volver al Índice</a>
+    <h1>Prueba 13: Rendimiento con Grupo Compartido</h1>
+    <p>Objetivo: Medir el rendimiento cuando se reutiliza un ÚNICO grupo de estilos para miles de elementos.</p>
+
+    <div id="controles" class="controles">
+        <label>
+            Cantidad de componentes: 
+            <input type="number" id="cantidad" value="5000" min="10" max="10000" class="input-cantidad">
+        </label>
+        <button id="btn-iniciar">Iniciar Benchmark</button>
+        <button id="btn-limpiar" disabled>Limpiar y Recolectar Basura</button>
+    </div>
+
+    <div id="resultados" class="resultados">Esperando inicio...</div>
+
+    <div id="contenedor-prueba" class="contenedor-prueba"></div>
+
+    <script type="module">
+        import crear_grupo from "../fuente/grupo_de_elementos_para_documentos_de_hipertexto.js"
+
+        const btnIniciar = document.getElementById("btn-iniciar")
+        const btnLimpiar = document.getElementById("btn-limpiar")
+        const inputCantidad = document.getElementById("cantidad")
+        const contenedor = document.getElementById("contenedor-prueba")
+        const resultados = document.getElementById("resultados")
+
+        let grupo_compartido = null
+
+        const log = (msg) => {
+            if (resultados.textContent === "Esperando inicio...") resultados.textContent = ""
+            resultados.textContent += msg + "\n"
+            resultados.scrollTop = resultados.scrollHeight
+            console.log(msg)
+        }
+
+        btnIniciar.addEventListener("click", async () => {
+            const cantidad = parseInt(inputCantidad.value)
+            if (!cantidad || cantidad < 1) return
+
+            btnIniciar.disabled = true
+            btnLimpiar.disabled = true
+            contenedor.replaceChildren()
+            resultados.textContent = "Iniciando...\n"
+
+            // Damos un pequeño respiro al UI
+            await new Promise(r => requestAnimationFrame(r))
+            await new Promise(r => setTimeout(r, 50))
+
+            const t0 = performance.now()
+
+            // 1. CREAMOS EL GRUPO UNA SOLA VEZ
+            if (!grupo_compartido) {
+                grupo_compartido = crear_grupo()
+                
+                // Definimos los estilos UNA SOLA VEZ
+                grupo_compartido.estilos({
+                    ".caja": {
+                        height: "50px",
+                        // backgroundColor se asignará inline para variedad visual
+                        borderRadius: "4px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "12px",
+                        color: "white",
+                        fontWeight: "bold",
+                        cursor: "pointer",
+                        transition: "transform 0.2s"
+                    },
+                    ".caja:hover": {
+                        transform: "scale(1.2) rotate(5deg)",
+                        zIndex: "10",
+                        boxShadow: "0 4px 10px rgba(0,0,0,0.3)"
+                    }
+                })
+            }
+
+            const fragmento = document.createDocumentFragment()
+
+            for (let i = 0; i < cantidad; i++) {
+                // 2. REUTILIZAMOS EL MISMO GRUPO
+                const el = grupo_compartido.elemento({
+                    tagName: "div",
+                    classList: "caja",
+                    childNodes: [`${i + 1}`]
+                })
+
+                // Asignamos color único via estilo inline directo al nodo DOM
+                // (Ya que la librería prohíbe pasar 'style' en el constructor, pero JS nativo lo permite)
+                el.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 60%)`
+
+                fragmento.appendChild(el)
+            }
+
+            contenedor.appendChild(fragmento)
+
+            const t1 = performance.now()
+            const tiempo = (t1 - t0).toFixed(2)
+            const promedio = (tiempo / cantidad).toFixed(3)
+
+            log(`--------------------------------`)
+            log(`Resultados para ${cantidad} componentes (GRUPO COMPARTIDO):`)
+            log(`Tiempo total de creación: ${tiempo} ms`)
+            log(`Promedio por componente: ${promedio} ms`)
+            // Filtramos solo etiquetas de estilo generadas por nuestra librería
+            log(`Etiquetas <style> en el DOM: ${document.querySelectorAll('style[id^="estilos-"]').length}`)
+            log(`--------------------------------`)
+
+            btnLimpiar.disabled = false
+        })
+
+        btnLimpiar.addEventListener("click", async () => {
+            btnLimpiar.disabled = true
+            log(`Iniciando limpieza...`)
+            
+            await new Promise(r => requestAnimationFrame(r))
+            await new Promise(r => setTimeout(r, 50))
+
+            const t0 = performance.now()
+            
+            contenedor.replaceChildren()
+            
+            // Nota: En este caso NO eliminamos el grupo_compartido ni sus estilos
+            // porque la idea es que un grupo compartido persista.
+            // Pero si quisiéramos limpiar todo:
+            if (grupo_compartido) {
+                grupo_compartido.recolectar_estilos_basura({ de_inmediato: true })
+                // Opcional: si queremos destruir el grupo realmente, tendríamos que eliminar su etiqueta style manualmente
+                // o confiar en que el GC detecte que ya no hay elementos usándolo (si la lógica de GC es inteligente).
+                // Por ahora solo limpiamos el DOM.
+            }
+
+            const t1 = performance.now()
+            log(`Limpieza completada en ${(t1 - t0).toFixed(2)} ms`)
+            log(`Etiquetas <style> restantes: ${document.querySelectorAll('style[id^="estilos-"]').length}`)
+            log(`--------------------------------`)
+            
+            btnIniciar.disabled = false
+        })
+    </script>
+</body>
+</html>
