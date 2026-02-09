@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Prueba 09: Combinadores y Reglas Complejas</title>
+    <style>
+        .link-volver { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333; }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="link-volver">← Volver al Índice</a>
+    <h1>Prueba 09: Combinadores y @supports</h1>
+    <p>Objetivo: Verificar combinadores (>, +, ~), selectores de atributo y reglas @supports.</p>
+
+    <div id="contenedor-prueba"></div>
+
+    <script type="module">
+        import crear_grupo from "../fuente/grupo_de_elementos_para_documentos_de_hipertexto.js"
+
+        const grupo = crear_grupo()
+        const contenedor = document.getElementById("contenedor-prueba")
+
+        // Estructura:
+        // .padre
+        //   -> .hijo-directo (span)
+        //   -> .hijo-directo-2 (span)
+        //   -> .contenedor-interno (div)
+        //      -> .nieto (p)
+        //   -> input[type="text"]
+        
+        const padre = grupo.elemento({
+            tagName: "div",
+            classList: ["padre"],
+            childNodes: [
+                grupo.elemento({ tagName: "h3", childNodes: ["Prueba de Combinadores:"] }),
+                
+                // 1. Hijo Directo (>)
+                grupo.elemento({ 
+                    tagName: "span", 
+                    classList: ["hijo-directo", "mb-small"], 
+                    childNodes: [
+                        "1. Hijo Directo (Debe ser ",
+                        grupo.elemento({ tagName: "strong", childNodes: ["AZUL"] }),
+                        ")"
+                    ]
+                }),
+                
+                // 2. Hermano Adyacente (+)
+                grupo.elemento({ 
+                    tagName: "span", 
+                    classList: ["hijo-directo", "mb-medium"], 
+                    childNodes: [
+                        "2. Segundo Hijo Directo (Debe ser ",
+                        grupo.elemento({ tagName: "strong", childNodes: ["ROJO y Subrayado"] }),
+                        ")"
+                    ]
+                }),
+
+                // 3. @supports y anidamiento
+                grupo.elemento({
+                    tagName: "div",
+                    classList: ["contenedor-interno"],
+                    childNodes: [
+                        grupo.elemento({ 
+                            tagName: "p", 
+                            classList: ["nieto"], 
+                            childNodes: [
+                                "3. Nieto (Debe tener fondo ",
+                                grupo.elemento({ tagName: "strong", childNodes: ["GRIS"] }),
+                                " y borde punteado)"
+                            ]
+                        })
+                    ]
+                }),
+
+                // 4. Selectores de Atributo
+                grupo.elemento({ 
+                    tagName: "p", 
+                    classList: ["titulo-input"],
+                    childNodes: [
+                        "4. Input Texto (Debe tener borde ",
+                        grupo.elemento({ tagName: "strong", childNodes: ["VIOLETA"] }),
+                        "):"
+                    ]
+                }),
+                grupo.elemento({
+                    tagName: "input",
+                    type: "text",
+                    value: "Soy Violeta",
+                    readOnly: true
+                }),
+
+                // 5. Hermano General (~)
+                grupo.elemento({ 
+                    tagName: "p", 
+                    classList: ["titulo-input"],
+                    childNodes: [
+                        "5. Checkbox (Debe tener outline ",
+                        grupo.elemento({ tagName: "strong", childNodes: ["NARANJA"] }),
+                        "):"
+                    ]
+                }),
+                grupo.elemento({
+                    tagName: "input",
+                    type: "checkbox",
+                    checked: true
+                })
+            ]
+        })
+
+        contenedor.appendChild(padre)
+
+        grupo.estilos({
+            ".padre": {
+                padding: "20px",
+                border: "1px solid #ccc",
+                
+                // 1. Combinador de hijo directo (>)
+                // Como .padre tiene el data-id, esto debe funcionar.
+                "& > .hijo-directo": {
+                    color: "blue",
+                    fontWeight: "bold"
+                },
+
+                // 2. Combinador de hermano adyacente (+)
+                // Selecciona el segundo span que va justo después del primero
+                "& > .hijo-directo + .hijo-directo": {
+                    color: "red", // El segundo hijo debe ser rojo
+                    textDecoration: "underline"
+                }
+            },
+            
+            // Clases utilitarias reemplazando estilos en línea
+            ".mb-small": { display: "block", marginBottom: "5px" },
+            ".mb-medium": { display: "block", marginBottom: "15px" },
+            ".titulo-input": { marginTop: "15px", marginBottom: "5px" },
+
+            // 3. Selector de Atributo
+            // input[type="text"]
+            // Ojo: los inputs creados con innerHTML NO tienen data-id.
+            // Así que el selector debe ser descendiente: [data-id] input[...]
+            // Si escribimos 'input[type="text"]', el generador produce:
+            // 'input[type="text"][data-id], [data-id] input[type="text"]'
+            // La segunda parte debería atraparlo.
+            'input[type="text"]': {
+                border: "2px solid violet",
+                marginTop: "10px",
+                display: "block"
+            },
+
+            // 4. Selector General de Hermanos (~)
+            // Selecciona checkboxes que estén después de un input text
+            'input[type="text"] ~ input[type="checkbox"]': {
+                outline: "2px solid orange" // Debería tener borde naranja
+            },
+
+            // 5. Regla @supports
+            "@supports (display: grid)": {
+                ".contenedor-interno": {
+                    display: "grid",
+                    backgroundColor: "#eee",
+                    padding: "10px",
+                    marginTop: "10px",
+                    border: "1px dotted #333"
+                }
+            }
+        })
+    </script>
+</body>
+</html>

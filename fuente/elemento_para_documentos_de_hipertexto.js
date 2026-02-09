@@ -21,17 +21,11 @@ export default ({ propiedades, identificador_del_grupo }) => {
     /* Una vez creado el elemento, */ for (const nombre_de_la_propiedad in propiedades) {
         /* le agregamos las propiedades. */  if (nombre_de_la_propiedad === "tagName") continue
 
-        /* Algunas propiedades debemos procesarlas antes de asignarlas al elemento. */ const propiedad = propiedades[nombre_de_la_propiedad]
-        /*
-        [ Estilos ]
-        */
-        /* Los estilos */ if (nombre_de_la_propiedad === "style") {
-            /* deben ser una lista. */ if (typeof propiedad !== "object") {
-                /* Si no son una lista, lanzamos un error. */ throw new Error("Los estilos deben de ser una lista («object»)") }
+        /* Verificamos que no se usen propiedades prohibidas. */
+        if (nombre_de_la_propiedad === "innerHTML") throw new Error("El uso de «innerHTML» está prohibido. Usa composición con «childNodes» y «elemento()».")
+        if (nombre_de_la_propiedad === "style") throw new Error("El uso de «style» está prohibido. Usa «estilos()» para definir la apariencia.")
 
-            /* Teniendo listos los estilos, los agregamos */ Object.keys(propiedad).forEach(regla => {
-                /* al elemento */ elemento.style[regla] =
-                /* uno por uno. */ propiedad[regla] } ); continue  }
+        /* Algunas propiedades debemos procesarlas antes de asignarlas al elemento. */ const propiedad = propiedades[nombre_de_la_propiedad]
         /*
         [ Clases ]
         */

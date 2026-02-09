@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Prueba 05: Variables y Fallbacks</title>
+    <style>
+        .link-volver { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333; }
+    </style>
 </head>
 <body>
-    <a href="../index.html" style="display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333;">← Volver al Índice</a>
+    <a href="../index.html" class="link-volver">← Volver al Índice</a>
     <h1>Prueba 05: Variables y Fallbacks</h1>
     <p>Objetivo: Verificar Variables CSS (case-sensitive) y Fallbacks de propiedades.</p>
     
@@ -18,27 +21,29 @@
         const tarjeta = grupo.elemento({
             tagName: "div",
             classList: "tarjeta",
-            innerHTML: `
-                <div class="contenido">Soy una tarjeta flexible</div>
-            `
+            childNodes: [
+                grupo.elemento({
+                    tagName: "div",
+                    classList: "contenido",
+                    childNodes: "Soy una tarjeta flexible"
+                })
+            ]
         })
         
         grupo.estilos({
-            reglas: {
-                ".tarjeta": {
-                    /* Variable CSS: Debe mantenerse como --miColorPrincipal (no --mi-color-principal) */
-                    "--miColorPrincipal": "rebeccapurple",
+            ".tarjeta": {
+                /* Variable CSS: Debe mantenerse como --miColorPrincipal (no --mi-color-principal) */
+                "--miColorPrincipal": "rebeccapurple",
+                
+                border: "2px solid var(--miColorPrincipal)",
+                padding: "20px",
+                color: "white",
+                
+                /* Fallback Array: */
+                backgroundColor: ["red", "var(--miColorPrincipal)"], // Si soporta vars, usa purple. Si no, red.
                     
-                    border: "2px solid var(--miColorPrincipal)",
-                    padding: "20px",
-                    color: "white",
-                    
-                    /* Fallback Array: */
-                    backgroundColor: ["red", "var(--miColorPrincipal)"], // Si soporta vars, usa purple. Si no, red.
-                    
-                    display: ["-webkit-flex", "flex"],
-                    justifyContent: "center"
-                }
+                display: ["-webkit-flex", "flex"],
+                justifyContent: "center"
             }
         })
         document.getElementById("contenedor").appendChild(tarjeta)

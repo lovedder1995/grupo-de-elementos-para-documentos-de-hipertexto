@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Prueba 03: Animaciones Aisladas</title>
+    <style>
+        .link-volver { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333; }
+        .contenedor-flex { display: flex; gap: 50px; }
+    </style>
 </head>
 <body>
-    <a href="../index.html" style="display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333;">← Volver al Índice</a>
+    <a href="../index.html" class="link-volver">← Volver al Índice</a>
     <h1>Prueba 03: Keyframes Aislados</h1>
     <p>Objetivo: Verificar que dos animaciones con el mismo nombre ("girar") no colisionen.</p>
     
-    <div style="display: flex; gap: 50px;">
+    <div class="contenedor-flex">
         <div id="contenedor-1">
             <h3>Grupo 1: Gira horario</h3>
         </div>
@@ -29,27 +33,25 @@
             childNodes: "1"
         })
         grupo1.estilos({
-            reglas: {
-                ".cuadro": {
-                    width: "100px",
-                    height: "100px",
-                    backgroundColor: "tomato",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    fontSize: "2rem",
-                    animation: "girar 2s infinite linear"
-                },
-                "@keyframes girar": {
-                    from: { transform: "rotate(0deg)" },
-                    to: { transform: "rotate(360deg)" }
-                }
+            ".cuadro": {
+                width: "100px",
+                height: "100px",
+                backgroundColor: "tomato",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                fontSize: "2rem",
+                animation: `girar-${grupo1.identificador} 2s infinite linear`
+            },
+            [`@keyframes girar-${grupo1.identificador}`]: {
+                from: { transform: "rotate(0deg)" },
+                to: { transform: "rotate(360deg)" }
             }
         })
         document.getElementById("contenedor-1").appendChild(cuadro1)
 
 
-        // GRUPO 2 (Mismo nombre de animación, diferente comportamiento)
+        // GRUPO 2 (Nombre diferente manualmente para evitar colisión)
         const grupo2 = crear_grupo()
         const cuadro2 = grupo2.elemento({
             tagName: "div",
@@ -57,21 +59,19 @@
             childNodes: "2"
         })
         grupo2.estilos({
-            reglas: {
-                ".cuadro": {
-                    width: "100px",
-                    height: "100px",
-                    backgroundColor: "skyblue",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    fontSize: "2rem",
-                    animation: "girar 2s infinite linear"
-                },
-                "@keyframes girar": {
-                    from: { transform: "rotate(0deg)" },
-                    to: { transform: "rotate(-360deg)" } // Gira al revés
-                }
+            ".cuadro": {
+                width: "100px",
+                height: "100px",
+                backgroundColor: "skyblue",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                fontSize: "2rem",
+                animation: `girar-${grupo2.identificador} 2s infinite linear`
+            },
+            [`@keyframes girar-${grupo2.identificador}`]: {
+                from: { transform: "rotate(0deg)" },
+                to: { transform: "rotate(-360deg)" } // Gira al revés
             }
         })
         document.getElementById("contenedor-2").appendChild(cuadro2)

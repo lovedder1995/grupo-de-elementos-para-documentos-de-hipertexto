@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Prueba 06: Escape Global</title>
+    <style>
+        .link-volver { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333; }
+    </style>
 </head>
 <body class="tema-oscuro">
-    <a href="../index.html" style="display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333;">← Volver al Índice</a>
+    <a href="../index.html" class="link-volver">← Volver al Índice</a>
     <h1>Prueba 06: :global()</h1>
     <p>Objetivo: Modificar el body (global) desde un componente aislado.</p>
     
@@ -21,24 +24,22 @@
         })
         
         grupo.estilos({
-            reglas: {
-                // Estilo local
-                "button": {
-                    padding: "10px",
-                    fontSize: "16px"
-                },
+            // Estilo local
+            "&": {
+                padding: "10px",
+                fontSize: "16px"
+            },
 
-                // Estilo global escapado
-                ":global(body)": {
-                    backgroundColor: "#333",
-                    color: "white",
-                    fontFamily: "sans-serif"
-                },
+            // Estilo global escapado
+            ":global(body)": {
+                backgroundColor: "#333",
+                color: "white",
+                fontFamily: "sans-serif"
+            },
 
-                // Selector mixto (local .hijo dentro de global .tema-oscuro)
-                ":global(.tema-oscuro) &": {
-                    border: "2px solid gold"
-                }
+            // Selector mixto (local .hijo dentro de global .tema-oscuro)
+            ":global(.tema-oscuro) &": {
+                border: "2px solid gold"
             }
         })
         document.getElementById("contenedor").appendChild(boton)

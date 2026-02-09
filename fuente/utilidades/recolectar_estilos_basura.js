@@ -1,6 +1,6 @@
 /*
 ---------------------------------------
-- Recolección de Basura (Garbage Collection) -
+- Utilidad: Recolectar estilos basura -
 ---------------------------------------
 */
 /* Usamos una bandera para evitar programar múltiples limpiezas simultáneas. */

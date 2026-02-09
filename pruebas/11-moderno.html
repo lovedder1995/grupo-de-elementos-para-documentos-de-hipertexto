@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Prueba 11: CSS Moderno</title>
+    <style>
+        .link-volver { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333; }
+    </style>
 </head>
 <body>
-    <a href="../index.html" style="display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333;">← Volver al Índice</a>
+    <a href="../index.html" class="link-volver">← Volver al Índice</a>
     <h1>Prueba 11: CSS Moderno y Selectores Complejos</h1>
     <p>Objetivo: Verificar soporte para características modernas (@container, @layer) y selectores complejos.</p>
 
@@ -23,21 +26,19 @@
            'base' pierde ante 'utilidad'
         */
         grupo.estilos({
-            reglas: {
-                "@layer base, utilidad": ";", // Declaración de orden (opcional pero buena práctica)
-                
-                "@layer base": {
-                    "p": {
-                        color: "red", // Este debería perder
-                        fontSize: "16px"
-                    }
-                },
-                
-                "@layer utilidad": {
-                    "p": {
-                        color: "green", // Este debería ganar
-                        fontWeight: "bold"
-                    }
+            "@layer base, utilidad": ";", // Declaración de orden (opcional pero buena práctica)
+            
+            "@layer base": {
+                "p": {
+                    color: "red", // Este debería perder
+                    fontSize: "16px"
+                }
+            },
+            
+            "@layer utilidad": {
+                "p": {
+                    color: "green", // Este debería ganar
+                    fontWeight: "bold"
                 }
             }
         })
@@ -53,33 +54,31 @@
                 grupo.elemento({
                     tagName: "div",
                     classList: ["hijo-responsive"],
-                    innerHTML: "Soy sensible a mi contenedor (Verde si ancho > 300px)"
+                    childNodes: ["Soy sensible a mi contenedor (Verde si ancho > 300px)"]
                 })
             ]
         })
 
         grupo.estilos({
-            reglas: {
-                ".wrapper-container": {
-                    containerType: "inline-size",
-                    width: "100%",
-                    maxWidth: "500px",
-                    border: "2px dashed #ccc",
-                    padding: "10px",
-                    resize: "horizontal", // Permitir redimensionar para probar
-                    overflow: "hidden",
-                    marginBottom: "20px"
-                },
+            ".wrapper-container": {
+                containerType: "inline-size",
+                width: "100%",
+                maxWidth: "500px",
+                border: "2px dashed #ccc",
+                padding: "10px",
+                resize: "horizontal", // Permitir redimensionar para probar
+                overflow: "hidden",
+                marginBottom: "20px"
+            },
+            ".hijo-responsive": {
+                backgroundColor: "salmon", // Fallback
+                color: "white",
+                padding: "10px"
+            },
+            "@container (min-width: 300px)": {
                 ".hijo-responsive": {
-                    backgroundColor: "salmon", // Fallback
-                    color: "white",
-                    padding: "10px"
-                },
-                "@container (min-width: 300px)": {
-                    ".hijo-responsive": {
-                        backgroundColor: "seagreen",
-                        content: '"Soy ancho!"'
-                    }
+                    backgroundColor: "seagreen",
+                    content: '"Soy ancho!"'
                 }
             }
         })
@@ -91,59 +90,59 @@
             tagName: "ul",
             classList: ["lista-logica"],
             childNodes: [
-                grupo.elemento({ tagName: "li", classList: ["item", "especial"], innerHTML: "Item Especial (:is/.especial) -> Azul" }),
-                grupo.elemento({ tagName: "li", classList: ["item"], innerHTML: "Item Normal" }),
-                grupo.elemento({ tagName: "li", classList: ["item", "ignorado"], innerHTML: "Item Ignorado (:not/.ignorado) -> Sin borde" }),
+                grupo.elemento({ tagName: "li", classList: ["item", "especial"], childNodes: ["Item Especial (:is/.especial) -> Azul"] }),
+                grupo.elemento({ tagName: "li", classList: ["item"], childNodes: ["Item Normal"] }),
+                grupo.elemento({ tagName: "li", classList: ["item", "ignorado"], childNodes: ["Item Ignorado (:not/.ignorado) -> Sin borde"] }),
                 grupo.elemento({ 
                     tagName: "li", 
                     classList: ["item", "padre-has"], 
-                    innerHTML: "Item Padre (:has) -> Borde rojo grueso",
-                    childNodes: [ grupo.elemento({ tagName: "span", innerHTML: " (Hijo detonante)" }) ]
+                    childNodes: [
+                        "Item Padre (:has) -> Borde rojo grueso",
+                        grupo.elemento({ tagName: "span", childNodes: [" (Hijo detonante)"] })
+                    ]
                 })
             ]
         })
 
         grupo.estilos({
-            reglas: {
-                ".lista-logica": {
-                    listStyle: "none",
-                    padding: "0"
-                },
-                /* Prueba de :is() y anidamiento */
-                ":is(.item)": {
-                    padding: "5px",
-                    margin: "5px 0",
-                    border: "1px solid #ddd"
-                },
-                /* Prueba de :is con selector anidado */
-                ".lista-logica :is(.especial)": {
-                    color: "blue",
-                    fontWeight: "bold"
-                },
-                /* Prueba de :not() */
-                ".item:not(.ignorado)": {
-                    borderLeft: "5px solid #aaa"
-                },
-                /* Prueba de :has() - Selecciona al padre si tiene un hijo span */
-                ".item:has(span)": {
-                    borderColor: "red",
-                    borderWidth: "3px"
-                },
-                /* Prueba de selectores de atributos complejos */
-                '[class*="padre"]': {
-                    backgroundColor: "#fff0f0"
-                }
+            ".lista-logica": {
+                listStyle: "none",
+                padding: "0"
+            },
+            /* Prueba de :is() y anidamiento */
+            ":is(.item)": {
+                padding: "5px",
+                margin: "5px 0",
+                border: "1px solid #ddd"
+            },
+            /* Prueba de :is con selector anidado */
+            ".lista-logica :is(.especial)": {
+                color: "blue",
+                fontWeight: "bold"
+            },
+            /* Prueba de :not() */
+            ".item:not(.ignorado)": {
+                borderLeft: "5px solid #aaa"
+            },
+            /* Prueba de :has() - Selecciona al padre si tiene un hijo span */
+            ".item:has(span)": {
+                borderColor: "red",
+                borderWidth: "3px"
+            },
+            /* Prueba de selectores de atributos complejos */
+            '[class*="padre"]': {
+                backgroundColor: "#fff0f0"
             }
         })
 
-        contenedor.appendChild(grupo.elemento({ tagName: "h3", innerHTML: "1. Prueba de @layer (Cascada)" }))
-        contenedor.appendChild(grupo.elemento({ tagName: "p", innerHTML: "Este texto debería ser VERDE (gana @layer utilidad) y no ROJO." }))
+        contenedor.appendChild(grupo.elemento({ tagName: "h3", childNodes: ["1. Prueba de @layer (Cascada)"] }))
+        contenedor.appendChild(grupo.elemento({ tagName: "p", childNodes: ["Este texto debería ser VERDE (gana @layer utilidad) y no ROJO."] }))
         
-        contenedor.appendChild(grupo.elemento({ tagName: "h3", innerHTML: "2. Prueba de @container (Queries)" }))
-        contenedor.appendChild(grupo.elemento({ tagName: "p", innerHTML: "Redimensiona el contenedor punteado. Si es ancho (>300px) será VERDE, si es estrecho será SALMÓN." }))
+        contenedor.appendChild(grupo.elemento({ tagName: "h3", childNodes: ["2. Prueba de @container (Queries)"] }))
+        contenedor.appendChild(grupo.elemento({ tagName: "p", childNodes: ["Redimensiona el contenedor punteado. Si es ancho (>300px) será VERDE, si es estrecho será SALMÓN."] }))
         contenedor.appendChild(wrapper)
 
-        contenedor.appendChild(grupo.elemento({ tagName: "h3", innerHTML: "3. Prueba de Selectores Lógicos (:is, :not, :has)" }))
+        contenedor.appendChild(grupo.elemento({ tagName: "h3", childNodes: ["3. Prueba de Selectores Lógicos (:is, :not, :has)"] }))
         contenedor.appendChild(lista)
 
     </script>

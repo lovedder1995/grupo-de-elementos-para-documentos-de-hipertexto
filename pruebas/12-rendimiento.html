@@ -3,24 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <title>Prueba 12: Rendimiento</title>
+    <style>
+        .link-volver { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333; }
+        .controles { margin-bottom: 20px; padding: 15px; background: #eee; border-radius: 8px; }
+        .input-cantidad { width: 80px; }
+        .resultados { margin-bottom: 20px; font-family: monospace; white-space: pre-wrap; background: #f9f9f9; padding: 10px; border: 1px solid #ddd; max-height: 200px; overflow-y: auto; }
+        .contenedor-prueba { display: grid; grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)); gap: 5px; }
+    </style>
 </head>
 <body>
-    <a href="../index.html" style="display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333;">← Volver al Índice</a>
+    <a href="../index.html" class="link-volver">← Volver al Índice</a>
     <h1>Prueba 12: Test de Rendimiento</h1>
     <p>Objetivo: Medir el tiempo de generación y renderizado de múltiples componentes aislados, así como la eficiencia del recolector de basura.</p>
 
-    <div id="controles" style="margin-bottom: 20px; padding: 15px; background: #eee; border-radius: 8px;">
+    <div id="controles" class="controles">
         <label>
             Cantidad de componentes: 
-            <input type="number" id="cantidad" value="500" min="10" max="5000" style="width: 80px;">
+            <input type="number" id="cantidad" value="500" min="10" max="5000" class="input-cantidad">
         </label>
         <button id="btn-iniciar">Iniciar Benchmark</button>
         <button id="btn-limpiar" disabled>Limpiar y Recolectar Basura</button>
     </div>
 
-    <div id="resultados" style="margin-bottom: 20px; font-family: monospace; white-space: pre-wrap; background: #f9f9f9; padding: 10px; border: 1px solid #ddd; max-height: 200px; overflow-y: auto;">Esperando inicio...</div>
+    <div id="resultados" class="resultados">Esperando inicio...</div>
 
-    <div id="contenedor-prueba" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)); gap: 5px;"></div>
+    <div id="contenedor-prueba" class="contenedor-prueba"></div>
 
     <script type="module">
         import crear_grupo from "../fuente/grupo_de_elementos_para_documentos_de_hipertexto.js"
@@ -46,7 +53,7 @@
 
             btnIniciar.disabled = true
             btnLimpiar.disabled = true
-            contenedor.innerHTML = ""
+            contenedor.replaceChildren()
             grupos = []
             resultados.textContent = "Iniciando...\n"
 
@@ -64,31 +71,29 @@
 
                 // Estilos únicos por componente para forzar generación de reglas aisladas y nuevas etiquetas style
                 grupo.estilos({
-                    reglas: {
-                        "div": {
-                            height: "50px",
-                            backgroundColor: `hsl(${Math.random() * 360}, 70%, 60%)`,
-                            borderRadius: "4px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontSize: "12px",
-                            color: "white",
-                            fontWeight: "bold",
-                            cursor: "pointer",
-                            transition: "transform 0.2s"
-                        },
-                        "div:hover": {
-                            transform: "scale(1.2) rotate(5deg)",
-                            zIndex: "10",
-                            boxShadow: "0 4px 10px rgba(0,0,0,0.3)"
-                        }
+                    "div": {
+                        height: "50px",
+                        backgroundColor: `hsl(${Math.random() * 360}, 70%, 60%)`,
+                        borderRadius: "4px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "12px",
+                        color: "white",
+                        fontWeight: "bold",
+                        cursor: "pointer",
+                        transition: "transform 0.2s"
+                    },
+                    "div:hover": {
+                        transform: "scale(1.2) rotate(5deg)",
+                        zIndex: "10",
+                        boxShadow: "0 4px 10px rgba(0,0,0,0.3)"
                     }
                 })
 
                 const el = grupo.elemento({
                     tagName: "div",
-                    innerHTML: `${i + 1}`
+                    childNodes: [`${i + 1}`]
                 })
 
                 fragmento.appendChild(el)
@@ -121,7 +126,7 @@
             const t0 = performance.now()
             
             // 1. Eliminamos elementos del DOM
-            contenedor.innerHTML = ""
+            contenedor.replaceChildren()
             
             // 2. Invocamos GC explícito inmediato
             if (grupos.length > 0) {

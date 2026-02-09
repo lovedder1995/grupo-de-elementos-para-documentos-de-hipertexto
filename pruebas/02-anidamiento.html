@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Prueba 02: Anidamiento y Pseudo-clases</title>
+    <style>
+        .link-volver { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333; }
+    </style>
 </head>
 <body>
-    <a href="../index.html" style="display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333;">← Volver al Índice</a>
+    <a href="../index.html" class="link-volver">← Volver al Índice</a>
     <h1>Prueba 02: Anidamiento (Nesting)</h1>
     <p>Objetivo: Verificar selectores anidados, pseudo-clases y uso de "&".</p>
     
@@ -18,41 +21,46 @@
         const boton = grupo.elemento({
             tagName: "button",
             classList: "boton",
-            innerHTML: "Pásame el cursor por encima <br><small>(Debe oscurecerse y mostrar una flecha →)</small>"
+            childNodes: [
+                "Pásame el cursor por encima ",
+                grupo.elemento({ tagName: "br" }),
+                grupo.elemento({
+                    tagName: "small",
+                    childNodes: "(Debe oscurecerse y mostrar una flecha →)"
+                })
+            ]
         })
         
         grupo.estilos({
-            reglas: {
-                ".boton": {
-                    backgroundColor: "#ddd",
-                    padding: "10px 20px",
-                    border: "none",
-                    cursor: "pointer",
-                    fontSize: "16px",
-                    transition: "all 0.3s",
-                    
-                    /* Anidamiento con pseudo-clase */
-                    "&:hover": {
-                        backgroundColor: "#aaa",
-                        color: "white"
-                    },
+            ".boton": {
+                backgroundColor: "#ddd",
+                padding: "10px 20px",
+                border: "none",
+                cursor: "pointer",
+                fontSize: "16px",
+                transition: "all 0.3s",
+                
+            /* Anidamiento con pseudo-clase */
+            "&:hover": {
+                backgroundColor: "#aaa",
+                color: "white"
+            },
 
-                    /* Anidamiento profundo */
-                    "& span": {
-                        fontWeight: "bold"
-                    },
+                /* Anidamiento profundo */
+                "& small": {
+                    fontWeight: "bold"
+                },
 
-                    /* Pseudo-elemento */
-                    "&::after": {
-                        content: "' →'",
-                        opacity: 0,
-                        transition: "opacity 0.3s"
-                    },
+                /* Pseudo-elemento */
+                "&::after": {
+                    content: "' →'",
+                    opacity: 0,
+                    transition: "opacity 0.3s"
+                },
 
-                    /* Estado compuesto */
-                    "&:hover::after": {
-                        opacity: 1
-                    }
+                /* Estado compuesto */
+                "&:hover::after": {
+                    opacity: 1
                 }
             }
         })

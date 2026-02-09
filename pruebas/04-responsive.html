@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Prueba 04: Responsive</title>
+    <style>
+        .link-volver { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333; }
+    </style>
 </head>
 <body>
-    <a href="../index.html" style="display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333;">← Volver al Índice</a>
+    <a href="../index.html" class="link-volver">← Volver al Índice</a>
     <h1>Prueba 04: Media Queries</h1>
     <p>Objetivo: Reducir el ancho de la ventana. El cuadro debe cambiar de color.</p>
     
@@ -22,18 +25,16 @@
         })
         
         grupo.estilos({
-            reglas: {
-                ".caja-responsive": {
-                    width: "100%",
-                    padding: "20px",
-                    backgroundColor: "lightgreen",
-                    textAlign: "center",
-                    transition: "background-color 0.5s",
+            ".caja-responsive": {
+                width: "100%",
+                padding: "20px",
+                backgroundColor: "lightgreen",
+                textAlign: "center",
+                transition: "background-color 0.5s",
 
-                    "@media (max-width: 600px)": {
-                        backgroundColor: "lightpink",
-                        fontWeight: "bold"
-                    }
+                "@media (max-width: 600px)": {
+                    backgroundColor: "lightpink",
+                    fontWeight: "bold"
                 }
             }
         })

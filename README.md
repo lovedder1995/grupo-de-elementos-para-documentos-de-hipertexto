@@ -46,18 +46,16 @@ const mi_componente = crear_grupo();
 
 // 2. Definimos estilos (Solo afectarán a este grupo)
 mi_componente.estilos({
-    reglas: {
-        ".boton": {
-            backgroundColor: "blue",
-            color: "white",
-            padding: "10px 20px",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer"
-        },
-        ".boton:hover": {
-            backgroundColor: "darkblue"
-        }
+    ".boton": {
+        backgroundColor: "blue",
+        color: "white",
+        padding: "10px 20px",
+        border: "none",
+        borderRadius: "5px",
+        cursor: "pointer"
+    },
+    ".boton:hover": {
+        backgroundColor: "darkblue"
     }
 });
 
@@ -104,11 +102,10 @@ Crea un nuevo contexto de aislamiento. Devuelve un objeto con las siguientes fun
     *   `childNodes`: Lista de nodos hijos (elementos, textos o números).
     *   Otras propiedades (`id`, `href`, `onclick`, etc.) se asignan directamente al elemento.
 
-*   **`estilos(configuracion)`**: Inyecta CSS aislado en el documento.
-    *   `reglas`: Objeto donde las claves son selectores CSS y los valores son objetos de estilo.
-        *   Soporta anidamiento (Sass-like).
-        *   Soporta `@media`, `@keyframes` (aislados automáticamente).
-        *   Soporta `&` para referenciar al padre.
+*   **`estilos(reglas)`**: Inyecta CSS aislado en el documento.
+    *   Soporta anidamiento (Sass-like).
+    *   Soporta `@media`, `@keyframes` (aislados automáticamente).
+    *   Soporta `&` para referenciar al padre.
 
 *   **`identificador_del_grupo`**: El UUID generado para este grupo.
 

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Prueba 10: Selectores Complejos</title>
+    <style>
+        .link-volver { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333; }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="link-volver">← Volver al Índice</a>
+    <h1>Prueba 10: Selectores Complejos (Comas y Paréntesis)</h1>
+    <p>Objetivo: Verificar que el motor no rompa selectores que contienen comas internas (en atributos o funciones).</p>
+
+    <div id="contenedor-prueba"></div>
+
+    <script type="module">
+        import crear_grupo from "../fuente/grupo_de_elementos_para_documentos_de_hipertexto.js"
+
+        const grupo = crear_grupo()
+        const contenedor = document.getElementById("contenedor-prueba")
+
+        // 1. Elemento con atributo que tiene coma
+        const elementoAtributo = grupo.elemento({
+            tagName: "div",
+            classList: ["caja"],
+            dataset: { info: "Uno, Dos" },
+            childNodes: [
+                "1. Tengo data-info='Uno, Dos'. Debo ser ",
+                grupo.elemento({ tagName: "strong", childNodes: ["VERDE"] }),
+                "."
+            ]
+        })
+
+        // 2. Elementos para probar :is()
+        const elementoIs1 = grupo.elemento({
+            tagName: "h3",
+            classList: ["titulo-a"],
+            childNodes: [
+                "2a. Soy H3 en :is(). Debo ser ",
+                grupo.elemento({ tagName: "strong", childNodes: ["AZUL"] }),
+                "."
+            ]
+        })
+        const elementoIs2 = grupo.elemento({
+            tagName: "h4",
+            classList: ["titulo-b"],
+            childNodes: [
+                "2b. Soy H4 en :is(). Debo ser ",
+                grupo.elemento({ tagName: "strong", childNodes: ["AZUL"] }),
+                "."
+            ]
+        })
+
+        contenedor.appendChild(elementoAtributo)
+        contenedor.appendChild(elementoIs1)
+        contenedor.appendChild(elementoIs2)
+
+        grupo.estilos({
+            // Caso A: Coma dentro de atributo
+            // Si el motor hace split(','), romperá esto en 'div[data-info="Uno' y ' Dos"]'
+            'div[data-info="Uno, Dos"]': {
+                color: "green",
+                border: "2px solid green",
+                padding: "10px",
+                marginBottom: "10px"
+            },
+
+            // Caso B: Coma dentro de pseudo-clase funcional
+            // Si rompe aquí, fallará la regla
+            ':is(.titulo-a, .titulo-b)': {
+                color: "blue",
+                textDecoration: "underline"
+            }
+        })
+    </script>
+</body>
+</html>

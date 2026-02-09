@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Prueba 01: Aislamiento Básico</title>
+    <style>
+        .link-volver { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333; }
+    </style>
 </head>
 <body>
-    <a href="../index.html" style="display: inline-block; margin-bottom: 20px; text-decoration: none; color: #333;">← Volver al Índice</a>
+    <a href="../index.html" class="link-volver">← Volver al Índice</a>
     <h1>Prueba 01: Aislamiento de Estilos</h1>
     <p>Objetivo: Verificar que los estilos de un grupo NO afecten a otro grupo idéntico.</p>
     
@@ -22,16 +25,18 @@
         const grupo1 = crear_grupo()
         const div1 = grupo1.elemento({
             tagName: "div",
-            innerHTML: `
-                <h2 class="titulo">Soy del Grupo 1 (Debería ser ROJO)</h2>
-            `
+            childNodes: [
+                grupo1.elemento({
+                    tagName: "h2",
+                    classList: "titulo",
+                    childNodes: "Soy del Grupo 1 (Debería ser ROJO)"
+                })
+            ]
         })
         grupo1.estilos({
-            reglas: {
-                ".titulo": {
-                    color: "red",
-                    fontSize: "20px"
-                }
+            ".titulo": {
+                color: "red",
+                fontSize: "20px"
             }
         })
         document.getElementById("contenedor-1").appendChild(div1)
@@ -41,16 +46,18 @@
         const grupo2 = crear_grupo()
         const div2 = grupo2.elemento({
             tagName: "div",
-            innerHTML: `
-                <h2 class="titulo">Soy del Grupo 2 (Debería ser AZUL)</h2>
-            `
+            childNodes: [
+                grupo2.elemento({
+                    tagName: "h2",
+                    classList: "titulo",
+                    childNodes: "Soy del Grupo 2 (Debería ser AZUL)"
+                })
+            ]
         })
         grupo2.estilos({
-            reglas: {
-                ".titulo": {
-                    color: "blue",
-                    fontSize: "20px"
-                }
+            ".titulo": {
+                color: "blue",
+                fontSize: "20px"
             }
         })
         document.getElementById("contenedor-2").appendChild(div2)
