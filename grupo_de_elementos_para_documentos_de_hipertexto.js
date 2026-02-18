@@ -1,6 +1,6 @@
-import elemento from "./elemento_para_documentos_de_hipertexto.js"
-import estilos from "./estilos_para_documentos_de_hipertexto.js"
-import recolectar_estilos_basura from "./utilidades/recolectar_estilos_basura.js"
+import elemento from "./fuente/elemento_para_documentos_de_hipertexto.js"
+import estilos from "./fuente/estilos_para_documentos_de_hipertexto.js"
+import recolectar_estilos_basura from "./fuente/utilidades/recolectar_estilos_basura.js"
 /*
 ====================================================
 = Grupo de elementos para documentos de hipertexto =

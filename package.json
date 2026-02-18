@@ -1,6 +1,6 @@
 {
   "name": "grupo-de-elementos-para-documentos-de-hipertexto",
-  "version": "2026.2.17-1",
+  "version": "2026.2.17-2",
   "type": "module",
-  "main": "fuente/grupo_de_elementos_para_documentos_de_hipertexto.js"
+  "main": "grupo_de_elementos_para_documentos_de_hipertexto.js"
 }

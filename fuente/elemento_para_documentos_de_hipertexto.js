@@ -21,9 +21,8 @@ export default ({ propiedades, identificador_del_grupo }) => {
     /* Una vez creado el elemento, */ for (const nombre_de_la_propiedad in propiedades) {
         /* le agregamos las propiedades. */  if (nombre_de_la_propiedad === "tagName") continue
 
-        /* Verificamos que no se usen propiedades prohibidas. */
-        if (nombre_de_la_propiedad === "innerHTML") throw new Error("El uso de «innerHTML» está prohibido. Usa composición con «childNodes» y «elemento()».")
-        if (nombre_de_la_propiedad === "style") throw new Error("El uso de «style» está prohibido. Usa «estilos()» para definir la apariencia.")
+        /* Está prohibido usar las propiedades «innerHTML» */ if (nombre_de_la_propiedad === "innerHTML") throw new Error("El uso de «innerHTML» está prohibido. Usa composición con «childNodes» y «elemento()».")
+        /* y «style» porque dan más problemas que beneficios. */if (nombre_de_la_propiedad === "style") throw new Error("El uso de «style» está prohibido. Usa «estilos()» para definir la apariencia.")
 
         /* Algunas propiedades debemos procesarlas antes de asignarlas al elemento. */ const propiedad = propiedades[nombre_de_la_propiedad]
         /*
@@ -34,8 +33,7 @@ export default ({ propiedades, identificador_del_grupo }) => {
                 /* En ese caso, agregamos las clases al elemento */ propiedad.forEach(clase => {
                     /* una por una. */ return elemento.classList.add(clase) } )
 
-            /* También las podemos recibir como una lista con filtros
-               para las clases que queremos o no queremos asignar. */ } else if (typeof propiedad === "object") {
+                /* También las podemos recibir como una lista con filtros para las clases que queremos o no queremos asignar. */ } else if (typeof propiedad === "object") {
                 /* En ese caso, antes de asignar cada clase, */ Object.keys(propiedad).forEach(clase => {
                     /* filtramos solo las que sí queremos */ if (propiedad[clase]) {
                         /* asignar. */ return elemento.classList.add(clase) } } )
