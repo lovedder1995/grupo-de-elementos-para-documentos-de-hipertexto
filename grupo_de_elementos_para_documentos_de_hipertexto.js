@@ -1,6 +1,5 @@
 import elemento from "./fuente/elemento_para_documentos_de_hipertexto.js"
 import estilos from "./fuente/estilos_para_documentos_de_hipertexto.js"
-import recolectar_estilos_basura from "./fuente/utilidades/recolectar_estilos_basura.js"
 /*
 ====================================================
 = Grupo de elementos para documentos de hipertexto =
@@ -13,10 +12,18 @@ let contador_de_grupos = 0
 
     /* Primero, le creamos un identificador único al grupo. */ const identificador = contador_de_grupos++
 
+    /* Función manual para eliminar estilos del grupo */
+    const eliminar_estilos = () => {
+        const estilo = document.querySelector(`style[id="estilos-${identificador}"]`)
+        if (estilo) {
+            estilo.parentNode.removeChild(estilo)
+        }
+    }
+
     /* Finalmente, devolvemos las herramientas disponibles para este grupo. */
     return {
         identificador,
-        recolectar_estilos_basura,
+        eliminar_estilos,
         elemento: (propiedades) => elemento({ propiedades, identificador_del_grupo: identificador }),
         estilos: (reglas) => estilos({ reglas, identificador_del_grupo: identificador })
     }

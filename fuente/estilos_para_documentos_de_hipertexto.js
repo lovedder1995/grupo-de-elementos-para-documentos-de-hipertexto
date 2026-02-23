@@ -1,4 +1,3 @@
-import recolectar_estilos_basura from "./utilidades/recolectar_estilos_basura.js"
 /*
 =========================================
 = Estilos para documentos de hipertexto =
@@ -36,7 +35,7 @@ const generar_código_css = ({ reglas, identificador_del_grupo, global = false, 
             }
 
             /* RECURSIÓN PARA EL CONTENIDO DEL BLOQUE */
-            let cuerpo_bloque = ""
+            let cuerpo_bloque
 
             /* Si estamos aislados o anidados (dentro de un selector), tratamos el contenido como cuerpo (propiedades + reglas) */
             if ((ya_aislado || anidado) && !selector.startsWith("@keyframes")) {
@@ -289,14 +288,6 @@ export default ({ reglas, identificador_del_grupo, global = false }) => {
     etiqueta_style.id = `estilos-${identificador_del_grupo}`
     etiqueta_style.textContent = css_compilado
     document.head.appendChild(etiqueta_style)
-
-    /*
-    [ Recolección de Basura (Garbage Collection) ]
-    Programamos una limpieza para cuando el navegador esté ocioso.
-    Esto evita bloquear el hilo principal y da tiempo a que los elementos recién creados se monten en el DOM.
-    Solo programamos si no hay ya una pendiente.
-    */
-    recolectar_estilos_basura()
 
     /* Devolvemos el texto generado por si acaso. */
     return css_compilado
